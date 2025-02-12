@@ -1,16 +1,24 @@
+/* ----------------model -----------------*/
 const model = {
-tasks: [],
+    tasks: [],
 
-addTask(title, description) {
-    const id = Math.random();
-    const newTask = {id, title, description}
-    this.tasks.push(newTask);
+    addTask(title, description) {
+        const id = Math.random();
+        const newTask = {id, title, description}
+        this.tasks.push(newTask);
 
-    view.renderTasks(this.tasks);
+        view.renderTasks(this.tasks);
+    },
+
+    deleteTask(taskId) {
+        this.tasks = this.tasks.filter((task) => task.id !== taskId);
+
+        view.renderTasks(model.tasks);
     },
 }
 
 
+/* ---------------- view ----------------*/
 const view = {
     init() {
         this.renderTasks(model.tasks);
@@ -31,17 +39,40 @@ const view = {
             inputDescription.value = '';
 
             hiddenText.classList.add('hidden');
+
+            let quantity = document.querySelector('.quantity');
+            quantity.textContent = `Всего заметок: ${model.tasks.length}`;
         });
 
-    //     const list = document.querySelector('.list');
-    //
-    //     list.addEventListener('click', (event) => {
-    //         event.preventDefault();
-    //         if (event.target.classList.contains('delete-button')) {
-    //             const movieId = +event.target.parentElement.id;
-    //             controller.deleteMovie(movieId);
-    //         }
-    //     })
+        const list = document.querySelector('.list');
+
+        list.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (event.target.classList.contains('delete-button')) {
+                const taskId = +event.target.parentElement.id;
+                controller.deleteTask(taskId);
+
+                let quantity = document.querySelector('.quantity');
+                quantity.textContent = `Всего заметок: ${model.tasks.length}`;
+            }
+        });
+
+
+
+
+/* ------------------- favorite --------------------*/
+        list.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (event.target.classList.contains('favorite-button')) {
+                const item = document.querySelector('.item');
+                item.classList.toggle('favorite');
+
+                // controller.favoriteTask(taskId);
+            }
+        });
+
+
+
     },
 
     renderTasks(tasks) {
@@ -53,6 +84,7 @@ const view = {
         <li id="${task.id}" class="item">
           <b class="task-title">${task.title}</b>
           <p class="task-description">${task.description}</p>
+          <button class="favorite-button" type="button">Избранное &hearts;</button>
           <button class="delete-button" type="button">Удалить 🗑</button>
         </li>
       `
@@ -65,17 +97,17 @@ const view = {
         const messageBox = document.querySelector('.message-box');
         messageBox.textContent = message;
         if (isError) {
-            messageBox.classList.remove('success');
+            // messageBox.classList.remove('success');
             messageBox.classList.add('error');
         } else {
             messageBox.classList.remove('error');
-            messageBox.classList.add('success');
+            // messageBox.classList.add('success');
         }
     },
-
 }
 
 
+/* ----------------- controller -------------------*/
 
 const controller = {
     addTask(title, description) {
@@ -86,7 +118,15 @@ const controller = {
             view.displayMessage('Заполните все поля!', true);
         }
     },
+
+    deleteTask(taskId) {
+        model.deleteTask(taskId);
+        view.displayMessage('Заметка удалена', false);
+    },
 }
+
+
+/* --------------------- init ---------------------------*/
 
 function init() {
     view.init();
