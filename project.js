@@ -1,4 +1,4 @@
-/* ----------------model -----------------*/
+/* -------------------------------------------------------model ------------------------------------------------------*/
 const model = {
     tasks: [],
 
@@ -18,7 +18,7 @@ const model = {
 }
 
 
-/* ---------------- view ----------------*/
+/* ------------------------------------------------------ view -------------------------------------------------------*/
 const view = {
     init() {
         this.renderTasks(model.tasks);
@@ -26,10 +26,10 @@ const view = {
         const form = document.querySelector('.form');
         const inputTitle = document.querySelector('.input-title');
         const inputDescription = document.querySelector('.input-description');
-
-        const defaultText = document.querySelector('.default-text');
-
-        let favoriteFilter = document.querySelector('.favorite-filter')
+        const defaultText = document.querySelector('.default-text'); // Текст при отсутствии заметок
+        const list = document.querySelector('.list');
+        const favoriteFilter = document.querySelector('.favorite-filter') // Блок добавления в избранное
+        const quantity = document.querySelector('.quantity'); // Счетчик заметок
 
         form.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -40,13 +40,8 @@ const view = {
 
             inputTitle.value = '';
             inputDescription.value = '';
-
             defaultText.classList.add('hidden');
-
-            let quantity = document.querySelector('.quantity');
             quantity.textContent = `Всего заметок: ${model.tasks.length}`;
-
-            // favoriteFilter.classList.remove('filter');
 
             if (model.tasks.length === 0) {
                 favoriteFilter.classList.add('hidden');
@@ -55,15 +50,13 @@ const view = {
             }
         });
 
-        const list = document.querySelector('.list');
-
         list.addEventListener('click', (event) => {
             event.preventDefault();
             if (event.target.classList.contains('delete-button')) {
                 const taskId = +event.target.parentElement.id;
+
                 controller.deleteTask(taskId);
 
-                let quantity = document.querySelector('.quantity');
                 quantity.textContent = `Всего заметок: ${model.tasks.length}`;
 
                 if (model.tasks.length === 0) {
@@ -73,25 +66,13 @@ const view = {
                     defaultText.classList.add('hidden');
                 }
             }
-        });
 
-
-
-
-/* ------------------- favorite --------------------*/
-        list.addEventListener('click', (event) => {
-            event.preventDefault();
             if (event.target.classList.contains('favorite-button')) {
                 const item = document.querySelector('.item');
                 event.target.classList.toggle('favorite');
-                item.classList.toggle('favorite-item');
-
-                // controller.favoriteTask(taskId);
+                // item.classList.toggle('favorite-item');
             }
         });
-
-
-
     },
 
     renderTasks(tasks) {
@@ -137,7 +118,7 @@ const view = {
 }
 
 
-/* ----------------- controller -------------------*/
+/* -------------------------------------------------- controller -----------------------------------------------------*/
 
 const controller = {
     addTask(title, description) {
@@ -147,10 +128,6 @@ const controller = {
         } else {
             view.displayMessage('Заполните все поля!', true);
         }
-
-        // if (title.length > 50) {
-        //     view.displayMessage('Максимальная длина заголовка - 50 символов');
-        // }
     },
 
     deleteTask(taskId) {
@@ -160,7 +137,7 @@ const controller = {
 }
 
 
-/* --------------------- init ---------------------------*/
+/* ----------------------------------------------------- init --------------------------------------------------------*/
 
 function init() {
     view.init();
