@@ -8,13 +8,28 @@
 .header {
     background-color: aqua;
     padding: 30px;
-    margin: 20px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
 }
 
 .container {
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.wrapper {
     min-height: 100vh;
+    background-color: floralwhite;
+    margin-bottom: 20px;
+}
+
+footer {
+    height: 80px;
+    background-color: aquamarine;
+    padding: 20px;
 }
 
 .form {
@@ -39,8 +54,10 @@
 
 .item {
     border: 1px black solid;
-    min-width: 300px;
+    min-width: 30%;
+    max-width: 30%;
     padding: 20px;
+    background-color: aquamarine;
 }
 
 .default-text {
@@ -63,3 +80,31 @@
 .favorite {
     color: red;
 }
+
+.favorite-form {
+    display: flex;
+    justify-content: end;
+    margin: 20px;
+    padding: 20px;
+}
+
+.favorite-filter.filter {
+    display: none;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    /*padding: 10px;*/
+}
+
+.item-body {
+    margin: 20px;
+}
+
+/*.favorite-button,*/
+/*.delete-button {*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*}*/

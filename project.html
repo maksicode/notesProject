@@ -10,48 +10,59 @@
 </head>
 
 <body>
-    <header class="header">
-        <div>HELLO</div>
-        <div class="quantity">Всего заметок: 0</div>
-    </header>
-
     <div class="container">
-        <div>
-            <form action="" class="form">
-                <label for="">Название заметки
-                    <input class="input-title" type="text">
-                </label>
-                <label for="">Описание новой заметки
-                    <textarea class="input-description"></textarea>
-                </label>
 
-                <fieldset>
-                    <label for="">Выберите цвет заметки
-                        <input type="checkbox">
-                        <input type="checkbox">
-                        <input type="checkbox">
-                        <input type="checkbox">
-                        <input type="checkbox">
+        <header class="header">
+            <div>HELLO</div>
+            <div class="quantity">Всего заметок: 0</div>
+        </header>
+
+
+        <div class="wrapper">
+            <div>
+                <form action="" class="form">
+                    <label for="">Название заметки
+                        <input class="input-title" type="text">
                     </label>
-                </fieldset>
+                    <label for="">Описание новой заметки
+                        <textarea class="input-description"></textarea>
+                    </label>
 
-                <button>Добавить заметку</button>
-            </form>
+                    <fieldset>
+                        <label for="">Выберите цвет заметки
+                            <input type="checkbox" checked>
+                            <input type="checkbox">
+                            <input type="checkbox">
+                            <input type="checkbox">
+                            <input type="checkbox">
+                        </label>
+                    </fieldset>
+
+                    <button>Добавить заметку</button>
+                </form>
+            </div>
+
+
+
+            <div class="message-box"></div>
+            <div class="default-text">У вас еще нет ни одной заметки<br>Заполните поля выше и создайте свою первую заметку!</div>
+
+            <div class="tasks">
+                <div class="favorite-filter hidden">
+                    <form action="" class="favorite-form">
+                        <label for="">Показать только избранные заметки
+                            <input type="checkbox">
+                        </label>
+                    </form>
+                </div>
+                <ul class="list"></ul>
+            </div>
         </div>
 
-        <div class="message-box"></div>
-        <div class="default-text">У вас еще нет ни одной заметки<br>Заполните поля выше и создайте свою первую заметку!</div>
+        <footer>FOOTER</footer>
 
-        <div>
-            <ul class="list">
-
-            </ul>
-        </div>
     </div>
 
-    <footer>
-        <div>FOOTER</div>
-    </footer>
 
 <script src="project.js"></script>
 </body>
