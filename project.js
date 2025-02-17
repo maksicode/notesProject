@@ -6,28 +6,27 @@ const model = {
         const id = Math.random();
         const newTask = { id: id, title: title, description: description, isFavorite: false };
         this.tasks.unshift(newTask);
-
         view.renderTasks(this.tasks);
     },
 
     deleteTask(taskId) {
         this.tasks = this.tasks.filter((task) => task.id !== taskId);
-
         view.renderTasks(this.tasks);
     },
 
     favoriteTask(taskId) {
         const task = this.tasks.find((task) => task.id === taskId);
         task.isFavorite = !task.isFavorite;
-
         view.renderTasks(this.tasks);
     },
 
-    favoriteTasks(taskId) {
-        const task = this.tasks.filter((task) => task.isFavorite);
-
-        view.renderTasks(this.tasks);
-    }
+    // favoriteTask(taskId) {
+    //     const task = this.tasks.find((task) => task.id === taskId);
+    //     if (task) {
+    //         task.isFavorite = !task.isFavorite; // Переключаем состояние isFavorite
+    //         view.renderTasks(this.tasks); // Перерисовываем задачи
+    //     }
+    // },
 }
 
 
@@ -82,26 +81,17 @@ const view = {
                     defaultText.classList.add('hidden');
                 }
             }
-
-            // if (event.target.classList.contains('favorite-button')) {
-            //     const taskId = event.target.parentElement.id;
-            //     const item = document.getElementById(taskId);
-            //
-            //     item.classList.toggle('favorite');
-            //
-            //     controller.favoriteTask(taskId);
-            // }
-
         });
 
 
         list.addEventListener('click', (event) => {
             event.preventDefault();
             if (event.target.classList.contains('favorite-button')) {
-                const taskId = event.target.parentElement.id;
-                const item = document.getElementById(taskId);
+                // const taskId = event.target.parentElement.id;
+                // const item = document.getElementById(taskId);
+                const taskId = +event.target.closest('.item').id
 
-                item.classList.toggle('favorite');
+                // item.classList.toggle('favorite');
 
                 controller.favoriteTask(taskId);
             }
@@ -109,16 +99,29 @@ const view = {
 
 
 
+        // favoriteCheckbox.addEventListener('change', (event) => {
+        //     event.preventDefault();
+        //     const  items = document.querySelectorAll('.item');
+        //     if (event.target.checked) {
+        //         for (const item of items) {
+        //             if (!item.classList.contains('favorite')) {
+        //                 item.classList.add('hidden');
+        //             }
+        //         }
+        //     } else {
+        //         for (const item of items) {
+        //             item.classList.remove('hidden');
+        //         }
+        //     }
+        // });
+
+
         favoriteCheckbox.addEventListener('change', (event) => {
-            event.preventDefault();
             if (event.target.checked) {
-                const taskId = event.target.parentElement.id;
-                // const favoriteTasks = model.tasks.filter((task) => task.isFavorite);
-                // view.renderTasks(model.favoriteTasks);
-                controller.favoriteTasks(taskId);
+                const favoriteTasks = model.tasks.filter((task) => task.isFavorite); // Фильтруем избранные задачи
+                view.renderTasks(favoriteTasks); // Показываем только избранные
             } else {
-                // view.renderTasks(model.tasks);
-                controller.addTask(taskId);
+                view.renderTasks(model.tasks); // Показываем все задачи
             }
         });
 
@@ -135,7 +138,7 @@ const view = {
         <li id="${task.id}" class="item">
         
             <b class="task-title">${task.title}</b>
-            <button class="favorite-button" type="button">Избранное</button>
+            <button class="favorite-button" type="button">${task.isFavorite ? 'В избранном' : 'В избранное'}</button>
             <button class="delete-button" type="button">Удалить</button>
        
             <div class="item-body">
@@ -188,12 +191,7 @@ const controller = {
 
     favoriteTask(taskId) {
         model.favoriteTask(taskId);
-        // view.displayMessage('Заметка добавлена в избранное', false);
     },
-
-    favoriteTasks(taskId) {
-        model.favoriteTasks(taskId);
-    }
 }
 
 
