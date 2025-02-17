@@ -4,7 +4,7 @@ const model = {
 
     addTask(title, description) {
         const id = Math.random();
-        const newTask = { id: id, title: title, description: description }
+        const newTask = { id: id, title: title, description: description, isFavorite: false };
         this.tasks.unshift(newTask);
 
         view.renderTasks(this.tasks);
@@ -16,15 +16,18 @@ const model = {
         view.renderTasks(this.tasks);
     },
 
-    // favoriteTask(taskId) {
-    //     this.tasks = this.tasks.map((task) => {
-    //         if (task.id === taskId) {
-    //            return {...task, isFavorite: !task.isFavorite};
-    //         }
-    //         return task;
-    //     })
-    //     view.renderTasks(this.tasks);
-    // },
+    favoriteTask(taskId) {
+        const task = this.tasks.find((task) => task.id === taskId);
+        task.isFavorite = !task.isFavorite;
+
+        view.renderTasks(this.tasks);
+    },
+
+    favoriteTasks(taskId) {
+        const task = this.tasks.filter((task) => task.isFavorite);
+
+        view.renderTasks(this.tasks);
+    }
 }
 
 
@@ -40,7 +43,9 @@ const view = {
         const list = document.querySelector('.list');
         const favoriteFilter = document.querySelector('.favorite-filter') // Блок добавления в избранное
         const quantity = document.querySelector('.quantity'); // Счетчик заметок
-        const item = document.querySelector('.item');
+
+        const favoriteCheckbox = document.querySelector('.favorite-checkbox');
+
 
         form.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -79,13 +84,46 @@ const view = {
             }
 
             // if (event.target.classList.contains('favorite-button')) {
-            //     const taskId = +event.target.closest('.item').id;
-            //
-            //     controller.favoriteTask(taskId);
+            //     const taskId = event.target.parentElement.id;
+            //     const item = document.getElementById(taskId);
             //
             //     item.classList.toggle('favorite');
+            //
+            //     controller.favoriteTask(taskId);
             // }
+
         });
+
+
+        list.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (event.target.classList.contains('favorite-button')) {
+                const taskId = event.target.parentElement.id;
+                const item = document.getElementById(taskId);
+
+                item.classList.toggle('favorite');
+
+                controller.favoriteTask(taskId);
+            }
+        });
+
+
+
+        favoriteCheckbox.addEventListener('change', (event) => {
+            event.preventDefault();
+            if (event.target.checked) {
+                const taskId = event.target.parentElement.id;
+                // const favoriteTasks = model.tasks.filter((task) => task.isFavorite);
+                // view.renderTasks(model.favoriteTasks);
+                controller.favoriteTasks(taskId);
+            } else {
+                // view.renderTasks(model.tasks);
+                controller.addTask(taskId);
+            }
+        });
+
+
+
     },
 
     renderTasks(tasks) {
@@ -148,10 +186,14 @@ const controller = {
         view.displayMessage('Заметка удалена', false);
     },
 
-    // favoriteTask(taskId) {
-    //     model.favoriteTask(taskId);
-    //     view.displayMessage('Заметка добавлена в избранное', false);
-    // },
+    favoriteTask(taskId) {
+        model.favoriteTask(taskId);
+        // view.displayMessage('Заметка добавлена в избранное', false);
+    },
+
+    favoriteTasks(taskId) {
+        model.favoriteTasks(taskId);
+    }
 }
 
 
