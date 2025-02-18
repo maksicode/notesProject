@@ -5,6 +5,10 @@
     font-size: 18px;
 }
 
+ul {
+    list-style-type: none;
+}
+
 .header {
     background-color: aqua;
     padding: 30px;
@@ -41,6 +45,24 @@ footer {
     background-color: bisque;
 }
 
+
+.input-title {
+    padding: 10px;
+    min-width: 30%;
+}
+
+.fieldset {
+    all: unset;
+}
+
+.fieldset-title {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+
 .list {
     margin: 20px;
     padding: 20px;
@@ -56,8 +78,24 @@ footer {
     border: 1px black solid;
     min-width: 30%;
     max-width: 30%;
-    padding: 20px;
-    background-color: aquamarine;
+    /*padding: 20px;*/
+    /*background-color: aquamarine;*/
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.task-title {
+    padding: 10px;
+    flex-grow: 3;
+}
+
+.task-buttons {
+    padding: 10px;
+    flex-grow: 1;
 }
 
 .default-text {
@@ -113,10 +151,10 @@ footer {
 .toast {
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
-    padding: 12px 20px;
+    padding: 24px 32px;
     margin-bottom: 10px;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 20px;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
 }
@@ -127,4 +165,51 @@ footer {
 
 .toast.success {
     background-color: rgba(0, 128, 0, 0.8);
+}
+
+
+.input-color {
+
+}
+
+.radio-list {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+
+.radio {
+    appearance: none;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    /*background-color: green;*/
+}
+
+.radio[aria-label="red"] {
+    background-color: #F37D7D;
+}
+
+.radio[aria-label="green"] {
+    background-color: #C2F37D;
+}
+
+.radio[aria-label="blue"] {
+    background-color: #7DE1F3;
+}
+
+.radio[aria-label="yellow"] {
+    background-color: #F3DB7D;
+}
+
+.radio[aria-label="purple"] {
+    background-color: #E77DF3;
+}
+
+.radio:checked {
+    border-color: white;
+    box-shadow: 0 0 0 3px white, /* Внутренняя обводка для создания промежутка */
+    0 0 0 5px #007BFF; /* Внешняя обводка */
 }

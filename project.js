@@ -3,9 +3,9 @@ const model = {
     tasks: [], // Массив для хранения задач
 
     // Метод для добавления новой задачи
-     addTask(title, description) {
+     addTask(title, description, color) {
         const id = Date.now(); // Генерация уникального ID с использованием текущего времени
-        const newTask = { id: id, title: title, description: description, isFavorite: false }; // Создание новой задачи
+        const newTask = { id: id, title: title, description: description, isFavorite: false, color: color }; // Создание новой задачи
         this.tasks.unshift(newTask); // Добавление задачи в начало массива
         view.renderTasks(this.tasks); // Обновление интерфейса
     },
@@ -99,11 +99,22 @@ const view = {
         const list = document.querySelector('.list');
         list.innerHTML = tasks.map(task => `
             <li id="${task.id}" class="item ${task.isFavorite ? 'favorite' : ''}">
-                <b class="task-title">${task.title}</b>
-                <button class="favorite-button" type="button">
-                    ${task.isFavorite ? 'В избранном' : 'В избранное'}
-                </button>
-                <button class="delete-button" type="button">Удалить</button>
+            
+            <div class="task-header" style="background-color: ${task.color}">
+                <p class="task-title">${task.title}</p>
+                <div class="task-buttons">
+                    
+                    <span class="favorite-button" style="cursor: pointer; font-size: 20px;">
+                        ${task.isFavorite ? '❤️' : '🤍'}
+                    </span>
+                    
+                    <span class="delete-button" style="cursor: pointer; font-size: 20px; user-select: none;">🗑️</span>
+                    
+                    
+                </div>
+                
+            </div>
+            
                 <div class="item-body">
                     <p class="task-description">${task.description}</p>
                 </div>
@@ -158,10 +169,16 @@ const controller = {
     // Метод для добавления задачи
     addTask(title, description) {
         if (title.trim() !== '' && description.trim() !== '') {
-            model.addTask(title, description);
-            // После добавления задачи обновляем отображение в зависимости от фильтра
-            view.updateTaskList();
-            view.displayMessage('Заметка добавлена');
+            if (title.length > 50) {
+                view.displayMessage('Название заметки не может быть длиннее 50 символов!', true);
+            } else {
+                const color = document.querySelector('input[name="color"]:checked').value; // Получаем выбранный цвет
+
+                model.addTask(title, description, color);
+                // После добавления задачи обновляем отображение в зависимости от фильтра
+                view.updateTaskList();
+                view.displayMessage('Заметка добавлена');
+            }
         } else {
             view.displayMessage('Заполните все поля!', true);
         }

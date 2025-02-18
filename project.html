@@ -21,21 +21,37 @@
         <div class="wrapper">
             <div>
                 <form action="" class="form">
-                    <label>Название заметки
-                        <input class="input-title" type="text">
-                    </label>
-                    <label>Описание новой заметки
-                        <textarea class="input-description"></textarea>
-                    </label>
 
-                    <fieldset>
-                        <label>Выберите цвет заметки
-                            <input type="radio" checked>
-                            <input type="radio">
-                            <input type="radio">
-                            <input type="radio">
-                            <input type="radio">
-                        </label>
+                    <div class="fieldset-title">
+                        <p>Название заметки</p>
+                        <input aria-label="" class="input-title" type="text" placeholder="Напишите название новой заметки.">
+                    </div>
+
+
+                    <div class="fieldset-title">
+                        <p>Описание новой заметки</p>
+                        <textarea aria-label="" class="input-description" placeholder="Напишите описание новой заметки."></textarea>
+                    </div>
+
+                    <fieldset class="fieldset input-color">
+                        <legend class="label">Выберите цвет заметки</legend>
+                        <ul class="radio-list">
+                            <li>
+                                <input type="radio" name="color" id="yellow"  class="radio"  value="#F3DB7D" aria-label="yellow" checked>
+                            </li>
+                            <li>
+                                <input type="radio" name="color" id="green"  class="radio" value="#C2F37D" aria-label="green">
+                            </li>
+                            <li>
+                                <input type="radio" name="color" id="blue"  class="radio" value="#7DE1F3" aria-label="blue">
+                            </li>
+                            <li>
+                                <input type="radio" name="color" id="red"  class="radio" value="#F37D7D" aria-label="red">
+                            </li>
+                            <li>
+                                <input type="radio" name="color" id="purple"  class="radio" value="#E77DF3" aria-label="purple">
+                            </li>
+                        </ul>
                     </fieldset>
 
                     <button>Добавить заметку</button>
@@ -52,7 +68,9 @@
                         </label>
                     </form>
                 </div>
+
                 <ul class="list"></ul>
+
             </div>
         </div>
 
