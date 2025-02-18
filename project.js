@@ -1,59 +1,67 @@
-/* -------------------------------------------------------model ------------------------------------------------------*/
+/*------------------------------------------------------- model ------------------------------------------------------*/
 const model = {
-    tasks: [],
+    tasks: [], // Массив для хранения задач
 
+    // Метод для добавления новой задачи
     addTask(title, description) {
-        const id = Date.now();
-        const newTask = { id: id, title: title, description: description, isFavorite: false };
-        this.tasks.unshift(newTask);
-        view.renderTasks(this.tasks);
+        const id = Date.now(); // Генерация уникального ID с использованием текущего времени
+        const newTask = { id: id, title: title, description: description, isFavorite: false }; // Создание новой задачи
+        this.tasks.unshift(newTask); // Добавление задачи в начало массива
+        view.renderTasks(this.tasks); // Обновление интерфейса
     },
 
+    // Метод для удаления задачи
     deleteTask(taskId) {
-        this.tasks = this.tasks.filter((task) => task.id !== taskId);
-        view.renderTasks(this.tasks);
+        this.tasks = this.tasks.filter((task) => task.id !== taskId); // Фильтрация массива, удаление задачи по ID
+        view.renderTasks(this.tasks); // Обновление интерфейса
     },
 
+    // Метод для переключения состояния "избранное"
     favoriteTask(taskId) {
-        const task = this.tasks.find((task) => task.id === taskId);
+        const task = this.tasks.find((task) => task.id === taskId); // Поиск задачи по ID
         if (task) {
-            task.isFavorite = !task.isFavorite; // Переключаем состояние isFavorite
-            view.updateTask(task);
+            task.isFavorite = !task.isFavorite; // Переключение состояния isFavorite
+            view.updateTask(task); // Обновление интерфейса для конкретной задачи
         }
     },
-}
+};
 
 
-/* ------------------------------------------------------ view -------------------------------------------------------*/
+/*--------------------------------------------------------- view -----------------------------------------------------*/
 const view = {
+    // Инициализация представления
     init() {
-        this.renderTasks(model.tasks);
+        this.renderTasks(model.tasks); // Первоначальное отображение задач
 
+        // Получение элементов DOM
         const form = document.querySelector('.form');
         const inputTitle = document.querySelector('.input-title');
         const inputDescription = document.querySelector('.input-description');
         const defaultText = document.querySelector('.default-text'); // Текст при отсутствии заметок
         const list = document.querySelector('.list');
-        const favoriteFilter = document.querySelector('.favorite-filter') // Блок добавления в избранное
+        const favoriteFilter = document.querySelector('.favorite-filter'); // Блок добавления в избранное
         const quantity = document.querySelector('.quantity'); // Счетчик заметок
-        const favoriteCheckbox = document.querySelector('.favorite-checkbox');
+        const favoriteCheckbox = document.querySelector('.favorite-checkbox'); // Чекбокс для фильтрации избранных
 
-
+        // Обработчик отправки формы
         form.addEventListener('submit', function (event) {
-            event.preventDefault();
+            event.preventDefault(); // Предотвращение перезагрузки страницы
             const title = inputTitle.value;
             const description = inputDescription.value;
 
-            controller.addTask(title, description);
+            controller.addTask(title, description); // Добавление задачи через контроллер
 
+            // Очистка полей ввода, если данные были введены
             if (title !== '' && description !== '') {
                 inputTitle.value = '';
                 inputDescription.value = '';
             }
 
-            defaultText.classList.add('hidden');
-            quantity.textContent = `Всего заметок: ${model.tasks.length}`;
+            // Обновление интерфейса
+            defaultText.classList.add('hidden'); // Скрытие текста "Нет задач"
+            quantity.textContent = `Всего заметок: ${model.tasks.length}`; // Обновление счетчика задач
 
+            // Показ/скрытие фильтра избранного
             if (model.tasks.length === 0) {
                 favoriteFilter.classList.add('hidden');
             } else {
@@ -61,61 +69,67 @@ const view = {
             }
         });
 
+        // Обработчик кликов по списку задач
         list.addEventListener('click', (event) => {
-            event.preventDefault();
-            const taskId = +event.target.closest('.item').id;
+            event.preventDefault(); // Предотвращение стандартного поведения
+            const taskId = +event.target.closest('.item').id; // Получение ID задачи
 
+            // Удаление задачи
             if (event.target.classList.contains('delete-button')) {
-                controller.deleteTask(taskId);
-                quantity.textContent = `Всего заметок: ${model.tasks.length}`;
-                defaultText.classList.toggle('hidden', model.tasks.length !== 0);
-                favoriteFilter.classList.toggle('hidden', model.tasks.length === 0);
+                controller.deleteTask(taskId); // Удаление задачи через контроллер
+                quantity.textContent = `Всего заметок: ${model.tasks.length}`; // Обновление счетчика задач
+                defaultText.classList.toggle('hidden', model.tasks.length !== 0); // Показ/скрытие текста "Нет задач"
+                favoriteFilter.classList.toggle('hidden', model.tasks.length === 0); // Показ/скрытие фильтра избранного
             }
 
+            // Переключение состояния "избранное"
             if (event.target.classList.contains('favorite-button')) {
-                controller.favoriteTask(taskId);
+                controller.favoriteTask(taskId); // Переключение состояния через контроллер
             }
         });
 
-        favoriteCheckbox.addEventListener('change', (event) => {
-            if (event.target.checked) {
-                const favoriteTasks = model.tasks.filter((task) => task.isFavorite); // Фильтруем избранные задачи
-                view.renderTasks(favoriteTasks); // Показываем только избранные
-            } else {
-                view.renderTasks(model.tasks); // Показываем все задачи
-            }
+        // Обработчик изменения состояния чекбокса "Показать только избранные"
+        favoriteCheckbox.addEventListener('change', () => {
+            view.updateTaskList(); // Теперь фильтр обновляется корректно
         });
     },
 
+    // Метод для отображения списка задач
     renderTasks(tasks) {
         const list = document.querySelector('.list');
         list.innerHTML = tasks.map(task => `
-        <li id="${task.id}" class="item ${task.isFavorite ? 'favorite' : ''}">
-            <b class="task-title">${task.title}</b>
-            <button class="favorite-button" type="button">
-                ${task.isFavorite ? 'В избранном' : 'В избранное'}
-            </button>
-            <button class="delete-button" type="button">Удалить</button>
-            <div class="item-body">
-                <p class="task-description">${task.description}</p>
-            </div>
-        </li>
-    `).join('');
+            <li id="${task.id}" class="item ${task.isFavorite ? 'favorite' : ''}">
+                <b class="task-title">${task.title}</b>
+                <button class="favorite-button" type="button">
+                    ${task.isFavorite ? 'В избранном' : 'В избранное'}
+                </button>
+                <button class="delete-button" type="button">Удалить</button>
+                <div class="item-body">
+                    <p class="task-description">${task.description}</p>
+                </div>
+            </li>
+        `).join(''); // Преобразование массива задач в HTML-строку
     },
 
+    // Метод для обновления конкретной задачи
     updateTask(task) {
-        const taskElement = document.getElementById(task.id);
+        const taskElement = document.getElementById(task.id); // Поиск элемента задачи по ID
         if (taskElement) {
+            // Обновление текста кнопки "Избранное"
             taskElement.querySelector('.favorite-button').textContent = task.isFavorite ? 'В избранном' : 'В избранное';
+            // Переключение класса "favorite" для визуального выделения
             taskElement.classList.toggle('favorite', task.isFavorite);
         }
     },
-    displayMessage(message, isError = false) {
-        const messageBox = document.querySelector('.message-box');
-        if (messageBox) {
-            messageBox.textContent = message;
-            messageBox.classList.remove('hidden');
 
+    // Метод для отображения сообщений
+    displayMessage(message, isError = false) {
+        const messageBox = document.querySelector('.message-box'); // Получение элемента для сообщений
+        if (messageBox) {
+            messageBox.textContent = message; // Установка текста сообщения
+            messageBox.classList.remove('hidden'); // Показ сообщения
+
+            // Установка класса для стилизации (ошибка или успех)
             if (isError) {
                 messageBox.classList.remove('success');
                 messageBox.classList.add('error');
@@ -124,41 +138,61 @@ const view = {
                 messageBox.classList.add('success');
             }
 
+            // Скрытие сообщения через 3 секунды
             setTimeout(() => {
                 messageBox.classList.add('hidden');
             }, 3000);
         }
-    }
-}
+    },
+
+    // Метод для обновления списка задач в зависимости от фильтра "избранное"
+    updateTaskList() {
+        const favoriteCheckbox = document.querySelector('.favorite-checkbox');
+        if (favoriteCheckbox.checked) {
+            const favoriteTasks = model.tasks.filter(task => task.isFavorite);
+            this.renderTasks(favoriteTasks); // Отображение только избранных задач
+        } else {
+            this.renderTasks(model.tasks); // Отображение всех задач
+        }
+    },
+};
 
 
-/* -------------------------------------------------- controller -----------------------------------------------------*/
+/*----------------------------------------------------- controller ---------------------------------------------------*/
 const controller = {
+    // Метод для добавления задачи
     addTask(title, description) {
         if (title.trim() !== '' && description.trim() !== '') {
             model.addTask(title, description);
+            // После добавления задачи обновляем отображение в зависимости от фильтра
+            view.updateTaskList();
             view.displayMessage('Заметка добавлена');
         } else {
             view.displayMessage('Заполните все поля!', true);
         }
     },
 
+    // Метод для удаления задачи
     deleteTask(taskId) {
         model.deleteTask(taskId);
+        view.updateTaskList(); // Обновляем список задач в зависимости от фильтра
         view.displayMessage('Заметка удалена', false);
     },
 
+    // Метод для переключения состояния "избранное"
     favoriteTask(taskId) {
-        model.favoriteTask(taskId);
+        model.favoriteTask(taskId); // Переключаем статус избранного
+        view.updateTaskList(); // Обновляем список задач в зависимости от фильтра
     },
-}
+};
 
 
-/* ----------------------------------------------------- init --------------------------------------------------------*/
+/*------------------------------------------------------ init --------------------------------------------------------*/
 function init() {
-    view.init();
+    view.init(); // Инициализация представления
 }
 
+// Запуск инициализации после загрузки DOM
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
