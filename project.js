@@ -18,7 +18,7 @@ const model = {
         const task = this.tasks.find((task) => task.id === taskId);
         if (task) {
             task.isFavorite = !task.isFavorite; // Переключаем состояние isFavorite
-            view.renderTasks(this.tasks); // Перерисовываем задачи
+            view.updateTask(task);
         }
     },
 }
@@ -36,7 +36,6 @@ const view = {
         const list = document.querySelector('.list');
         const favoriteFilter = document.querySelector('.favorite-filter') // Блок добавления в избранное
         const quantity = document.querySelector('.quantity'); // Счетчик заметок
-
         const favoriteCheckbox = document.querySelector('.favorite-checkbox');
 
 
@@ -45,8 +44,13 @@ const view = {
             const title = inputTitle.value;
             const description = inputDescription.value;
 
-            inputTitle.value = '';
-            inputDescription.value = '';
+            controller.addTask(title, description);
+
+            if (title !== '' && description !== '') {
+                inputTitle.value = '';
+                inputDescription.value = '';
+            }
+
             defaultText.classList.add('hidden');
             quantity.textContent = `Всего заметок: ${model.tasks.length}`;
 
@@ -55,31 +59,22 @@ const view = {
             } else {
                 favoriteFilter.classList.remove('hidden');
             }
-
-            controller.addTask(title, description);
         });
 
         list.addEventListener('click', (event) => {
             event.preventDefault();
-            if (event.target.classList.contains('delete-button')) {
-                const taskId = +event.target.parentElement.id;
-                quantity.textContent = `Всего заметок: ${model.tasks.length}`;
-                if (model.tasks.length === 0) {
-                    defaultText.classList.remove('hidden');
-                    favoriteFilter.classList.add('hidden');
-                } else {
-                    defaultText.classList.add('hidden');
-                }
+            const taskId = +event.target.closest('.item').id;
 
+            if (event.target.classList.contains('delete-button')) {
                 controller.deleteTask(taskId);
+                quantity.textContent = `Всего заметок: ${model.tasks.length}`;
+                defaultText.classList.toggle('hidden', model.tasks.length !== 0);
+                favoriteFilter.classList.toggle('hidden', model.tasks.length === 0);
             }
 
             if (event.target.classList.contains('favorite-button')) {
-                const taskId = +event.target.closest('.item').id
-
                 controller.favoriteTask(taskId);
             }
-
         });
 
         favoriteCheckbox.addEventListener('change', (event) => {
@@ -90,45 +85,54 @@ const view = {
                 view.renderTasks(model.tasks); // Показываем все задачи
             }
         });
-
     },
 
     renderTasks(tasks) {
         const list = document.querySelector('.list');
-        let tasksHTML = '';
-
-        for (const task of tasks) {
-            tasksHTML += `
+        list.innerHTML = tasks.map(task => `
         <li id="${task.id}" class="item ${task.isFavorite ? 'favorite' : ''}">
-        
             <b class="task-title">${task.title}</b>
-            <button class="favorite-button" type="button">${task.isFavorite ? 'В избранном' : 'В избранное'}</button>
+            <button class="favorite-button" type="button">
+                ${task.isFavorite ? 'В избранном' : 'В избранное'}
+            </button>
             <button class="delete-button" type="button">Удалить</button>
-       
             <div class="item-body">
                 <p class="task-description">${task.description}</p>
             </div>
         </li>
-      `
+    `).join('');
+    },
+
+    updateTask(task) {
+        const taskElement = document.getElementById(task.id);
+        if (taskElement) {
+            taskElement.querySelector('.favorite-button').textContent = task.isFavorite ? 'В избранном' : 'В избранное';
+            taskElement.classList.toggle('favorite', task.isFavorite);
         }
-
-        list.innerHTML = tasksHTML;
     },
-
-    displayMessage(message) {
+    displayMessage(message, isError = false) {
         const messageBox = document.querySelector('.message-box');
-        messageBox.textContent = message;
+        if (messageBox) {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden');
 
-        setTimeout(() => {
-            messageBox.classList.add('hidden');
-        }, 3000);
-        messageBox.classList.remove('hidden');
-    },
+            if (isError) {
+                messageBox.classList.remove('success');
+                messageBox.classList.add('error');
+            } else {
+                messageBox.classList.remove('error');
+                messageBox.classList.add('success');
+            }
+
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 3000);
+        }
+    }
 }
 
 
 /* -------------------------------------------------- controller -----------------------------------------------------*/
-
 const controller = {
     addTask(title, description) {
         if (title.trim() !== '' && description.trim() !== '') {
@@ -151,7 +155,6 @@ const controller = {
 
 
 /* ----------------------------------------------------- init --------------------------------------------------------*/
-
 function init() {
     view.init();
 }
