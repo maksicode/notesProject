@@ -3,7 +3,7 @@ const model = {
     tasks: [], // Массив для хранения задач
 
     // Метод для добавления новой задачи
-    addTask(title, description) {
+     addTask(title, description) {
         const id = Date.now(); // Генерация уникального ID с использованием текущего времени
         const newTask = { id: id, title: title, description: description, isFavorite: false }; // Создание новой задачи
         this.tasks.unshift(newTask); // Добавление задачи в начало массива
@@ -122,27 +122,22 @@ const view = {
         }
     },
 
-    // Метод для отображения сообщений
     displayMessage(message, isError = false) {
-        const messageBox = document.querySelector('.message-box'); // Получение элемента для сообщений
-        if (messageBox) {
-            messageBox.textContent = message; // Установка текста сообщения
-            messageBox.classList.remove('hidden'); // Показ сообщения
+        const toastContainer = document.querySelector('.toast-container');
 
-            // Установка класса для стилизации (ошибка или успех)
-            if (isError) {
-                messageBox.classList.remove('success');
-                messageBox.classList.add('error');
-            } else {
-                messageBox.classList.remove('error');
-                messageBox.classList.add('success');
-            }
+        // Создаем уведомление
+        const toast = document.createElement('div');
+        toast.classList.add('toast', isError ? 'error' : 'success');
+        toast.textContent = message;
 
-            // Скрытие сообщения через 3 секунды
-            setTimeout(() => {
-                messageBox.classList.add('hidden');
-            }, 3000);
-        }
+        // Добавляем в контейнер
+        toastContainer.appendChild(toast);
+
+        // Удаляем уведомление через 3 секунды
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
     },
 
     // Метод для обновления списка задач в зависимости от фильтра "избранное"

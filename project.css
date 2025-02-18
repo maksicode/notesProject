@@ -1,6 +1,6 @@
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     font-size: 18px;
 }
@@ -103,8 +103,28 @@ footer {
     margin: 20px;
 }
 
-/*.favorite-button,*/
-/*.delete-button {*/
-/*    width: 30px;*/
-/*    height: 30px;*/
-/*}*/
+.toast-container {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.toast.error {
+    background-color: rgba(255, 0, 0, 0.8);
+}
+
+.toast.success {
+    background-color: rgba(0, 128, 0, 0.8);
+}
